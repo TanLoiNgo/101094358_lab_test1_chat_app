@@ -1,0 +1,284 @@
+<link rel="stylesheet" href="/css/bootstrap.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<body style="background-color:hsla(0,100%,50%,0.5);">
+
+    <section id="logIn" class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                        <div class="card-body p-5 text-center">
+
+                            <div class="mb-md-5 mt-md-4 pb-5">
+
+                                <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                                <p class="text-white-50 mb-5">Please enter your username and password!</p>
+
+                                <div class="form-outline form-white mb-4">
+                                    <input type="email" id="userName" value="TanLoi"
+                                        class="form-control form-control-lg" />
+                                    <label class="form-label" for="userName">Username:</label>
+                                </div>
+
+                                <div class="form-outline form-white mb-4">
+                                    <input type="password" id="password" value="TanLoi" required
+                                        class="form-control form-control-lg" />
+                                    <label class="form-label" for="password">Password</label>
+                                </div>
+
+
+                                <button class="btn btn-outline-light btn-lg px-5" onclick="login()"
+                                    type="button">Login</button>
+
+                            </div>
+
+                            <div>
+                                <p class="mb-0">Don't have an account? <button type="button" class="btn btn-primary"
+                                        data-bs-toggle="modal" data-bs-target="#signUp">
+                                        Sign up
+                                    </button></p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <div class="modal fade " id="signUp" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerLabel">Register</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="username_signup" class="col-form-label">Username:</label>
+                        <input type="text" class="form-control" id="username_signup">
+                    </div>
+                    <div class="mb-3">
+                        <label for="firstname_signup" class="col-form-label">First Name:</label>
+                        <input type="text" class="form-control" id="firstname_signup">
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastname_signup" class="col-form-label">Last Name:</label>
+                        <input type="text" class="form-control" id="lastname_signup">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password_signup" class="col-form-label">Password:</label>
+                        <input type="password" class="form-control" id="password_signup">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="register()">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="groupChat" style="display: none;" class="row mt-5">
+        <div class="col-md-6 offset-md-3">
+
+            <h5 class="font-weight-bold mb-3 text-center text-white">Chat Rooms</h5>
+            <div class="row justify-content-md-center">
+                <div class="col">
+                    <button class="btn btn-outline-dark  btn-lg px-5" onclick="selectRoom('news')"
+                        type="button">News</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-outline-dark btn-lg px-5" onclick="selectRoom('covid19')"
+                        type="button">covid19</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-outline-dark btn-lg px-5" onclick="selectRoom('nodejs')"
+                        type="button">NodeJs</button>
+                </div>
+            </div>
+        </div>
+        <div class=" mt-5 col-md-6 offset-md-3">
+            <h5 id="currentChatroomName" class="font-weight-bold mb-3 text-center text-white">Welcome to Our Group </h5>
+            <ul class="list-unstyled text-white">
+                <div id="messagesInGroup" >
+                </div>
+                <li class="mb-3 mt-3">
+                    <div class="form-outline form-white">
+                        <textarea class="form-control" id="message" rows="1" onfocus="isTyping()"
+                            onfocusout="stopTyping()"></textarea>
+                       
+                    </div>
+                    <div class="form-outline form-white">
+                        <label class="form-label mt-1 bg-dark" for="message" id="showtyping"></label>
+                    </div>
+                </li>
+                <button type="button" class="btn btn-light btn-lg btn-rounded float-end"
+                    onclick="sendMessageToGroupChat()">Send</button>
+            </ul>
+
+        </div>
+
+    </div>
+</body>
+
+<script>
+    var currentUser = null;
+    var currentRoom = "javascripts";
+
+    function login() {
+        fetch('/chatrouter/validate_user/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "username": $('#userName').val(),
+                "password": $('#password').val()
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.validated) {
+                    currentUser = $('#userName').val()
+                    $('#logIn').toggle()
+                    $('#groupChat').toggle()
+                } else {
+                    alert("User not validated")
+                }
+            });
+    }
+
+    function register() {
+        fetch('/chatrouter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "username": $('#username_signup').val(),
+                "firstname": $('#firstname_signup').val(),
+                "lastname": $('#lastname_signup').val(),
+                "password": $('#password_signup').val()
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.username) {
+                    currentUser = data.username
+                    $('#logIn').toggle()
+                    $('#groupChat').toggle()
+                    $('#signUp').modal('toggle')
+                } else {
+                    alert("Error, user already exists")
+                }
+            });
+    }
+
+    function MessagesFromOthers(from, message) {
+        return `
+        <div class="card mask-custom bg-secondary mt-2">
+         
+            <p class="fw-bold mb-2">${from}:  ${message}</p>
+          </div>
+     
+      `
+    }
+
+    function MessageFromCurrentUser(message) {
+        return `
+        <div class="card mask-custom  w-100 bg-dark mt-2">
+
+            <p class="fw-bold mb-2">${currentUser}:  ${message}</p>
+          </div>
+          
+    
+        
+    
+      `
+    }
+    function loadMessages() {
+        fetch(`/chatrouter/room/${currentRoom}`)
+            .then(response => response.json())
+            .then(messages => {
+                console.log(messages)
+                $("#messagesInGroup").empty()
+                for (let message of messages) {
+                    if (message.from_user == currentUser) {
+                        $("#messagesInGroup").append(MessageFromCurrentUser(message.message))
+                    } else {
+                        $("#messagesInGroup").append(MessagesFromOthers(message.from_user, message.message))
+                    }
+                }
+            });
+    }
+
+    function selectRoom(room) {
+        currentRoom = room
+        $('#currentChatroomName').html(room)
+        loadMessages()
+    }
+
+    function sendMessageToGroupChat() {
+        fetch('/chatrouter/send_room/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "from_user": currentUser,
+                "room": currentRoom,
+                "message": $('#message').val()
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                loadMessages()
+                sendMessage()
+            });
+    }
+
+    function isTyping() {
+        client.emit('isTyping', currentUser)
+    }
+
+    function stopTyping() {
+        client.emit('stopTyping', currentUser)
+    }
+
+    loadMessages()
+</script>
+
+
+<script>
+    const client = io()
+
+    client.on('messageReceived', () => {
+        loadMessages()
+    })
+
+    client.on('isTyping', (user) => {
+        $("#showtyping").html(`${user} is typing...`)
+    })
+
+    client.on('stopTyping', (user) => {
+        $("#showtyping").html("")
+    })
+
+    function sendMessage() {
+        client.emit('messageSent')
+    }
+</script>
+</body>
+
+</html>
